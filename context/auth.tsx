@@ -7,8 +7,8 @@ import { TOKEN_KEY } from '@/utils/constant';
 interface AuthContextType {
   session: string | null;
   isLoading: boolean;
-  signIn: (token: string) => void;
-  signOut: () => void;
+  signIn: (token: string) => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
@@ -22,6 +22,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check for a saved token when the app starts
     const loadStorageData = async () => {
       const token = await AsyncStorage.getItem(TOKEN_KEY);
+      console.log('Loaded token from storage:', token);
       if (token) setSession(token);
       setIsLoading(false);
     };
