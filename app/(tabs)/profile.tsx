@@ -1,12 +1,12 @@
 import { Pressable, Text, View } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
-import { useAuth } from '@/context/auth';
+import { useAuthStore } from '@/stores/auth';
 import { router } from 'expo-router';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
-    const { signOut } = useAuth();
+    const signOut = useAuthStore((state) => state.signOut);
     const insets = useSafeAreaInsets();
 
     return (

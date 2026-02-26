@@ -20,7 +20,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { showToast } from '@/utils/utils';
-import { useAuth } from '@/context/auth';
+import { useAuthStore } from '@/stores/auth';
 import { useLogin } from '@/hooks/use-login';
 import { zodResolver } from '@hookform/resolvers/zod';
 
@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
 });
 
 export default function LoginScreen() {
-    const { signIn } = useAuth();
+    const signIn = useAuthStore((state) => state.signIn);
     const loginMutation = useLogin();
     const isSubmitting = loginMutation.isPending;
 
@@ -150,7 +150,10 @@ export default function LoginScreen() {
                         <View style={[styles.dot, styles.dotTwo]} />
                         <View style={[styles.dot, styles.dotThree]} />
                     </View>
-                    <View id='main-container' className='justify-center flex-1 px-6'>
+                    <View
+                        id='main-container'
+                        className='justify-center flex-1 px-6'
+                    >
                         {/* icon */}
                         <View className='items-center mb-10'>
                             <View className='flex items-center justify-center w-24 h-24 mb-2 rounded-full bg-accent-purple-light'>
