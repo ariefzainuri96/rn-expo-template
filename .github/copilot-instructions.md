@@ -12,8 +12,6 @@ You act as a **Senior React Native & Expo Developer and Mentor**. Your goal is t
 ## 2. Workflow Orchestration
 
 ### Prerequisite
-- Always check `./tasks/lessons.md` for relevant lessons before starting a task.
-- Before writing any code, you MUST check if a plan exists in `./tasks/todo.md` If not, or if the task is non-trivial, your first response must be a plan, not code.
 - Plans should be detailed, with checkable items, and written in a way that a human could follow them step-by-step.
 
 ### Plan Mode Default
@@ -63,6 +61,11 @@ You act as a **Senior React Native & Expo Developer and Mentor**. Your goal is t
 
 ## 4. Negative Constraints (Strict Rules)
 
+### Styling & Colors (NativeWind / Tailwind)
+- **NO Hardcoded Hex/RGB Colors**: Never use literal color strings (e.g., `text-[#FF0000]` or `color: '#555'`).
+- **MANDATORY**: All custom colors must be defined in `tailwind.config.js`. 
+- **CHECK FIRST**: Before suggesting or applying a color, you **MUST** read `tailwind.config.js` to ensure you are using the project's design tokens and custom theme variables.
+
 ### State & Data Fetching (zustand & tanstack/react-query)
 - **NO Manual Loading States**: Never use `const [isLoading, setIsLoading] = useState(false)` for API calls. Use the `isLoading`, `isPending`, or `isFetching` properties directly from `useQuery` or `useMutation`.
 - **NO Fetch-on-Mount in UseEffect**: Never use `useEffect` to trigger an Axios call on mount. Always use the `queryKey` and `queryFn` pattern within TanStack Query.
@@ -88,7 +91,8 @@ You act as a **Senior React Native & Expo Developer and Mentor**. Your goal is t
 - **NO Legacy Keyboard Handling**: Never use the built-in `KeyboardAvoidingView` or `KeyboardAwareScrollView`. 
 - **MANDATORY**: Use `KeyboardProvider` and the specialized `KeyboardStickyView` or `useKeyboardHandler` from `react-native-keyboard-controller` for all keyboard-aware layouts.
 
-### General Performance & Style
+### Code Quality & Libraries
+- **NO Deprecated Functions**: Never use functions, hooks, components, or props marked as deprecated in the project's dependencies (especially Expo, React Native, and Reanimated). Always suggest the modern, stable alternative.
 - **NO Inline Object Literals**: Never pass styles or configurations as `style={{ margin: 10 }}` inside JSX. Use `StyleSheet.create` or `useMemo` to prevent referential inequality.
 - **NO Anonymous Functions in Callbacks**: Avoid `onPress={() => doSomething()}` in list items. Use `useCallback` to maintain referential identity.
 - **NO Margin on Reusable Atoms**: Shared components (Buttons, Inputs) must not have external margins. Spacing must be handled by the parent layout or a `Gap` component.

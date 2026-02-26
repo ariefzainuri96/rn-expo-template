@@ -9,9 +9,12 @@ import {
 } from '@react-navigation/native';
 import { SplashScreen, Stack, router } from 'expo-router';
 
-import { StatusBar } from 'expo-status-bar';
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { queryClient } from '@/lib/query-client';
+import { QueryClientProvider } from '@tanstack/react-query';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import Toast from 'react-native-toast-message';
 
 // Keep splash screen visible while we fetch auth state
 SplashScreen.preventAutoHideAsync();
@@ -31,8 +34,6 @@ function InitialLayout() {
 
             // 2. Wrap in a small check to ensure the router is mounted
             // and navigation happens after the first render cycle.
-            const inAuthGroup = false; // logic to check if user is in (auth) group if needed
-
             if (!session) {
                 // Redirect to login if not authenticated
                 router.replace('/login');
@@ -67,10 +68,11 @@ function InitialLayout() {
 
 export default function RootLayout() {
     return (
-        // We wrap the navigation logic in the Provider here.
-        // This ensures useAuth() is available inside InitialLayout.
-        <AuthProvider>
-            <InitialLayout />
-        </AuthProvider>
+        <QueryClientProvider client={queryClient}>
+            <AuthProvider>
+                <InitialLayout />
+            </AuthProvider>
+            <Toast />
+        </QueryClientProvider>
     );
 }

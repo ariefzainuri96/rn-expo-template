@@ -1,9 +1,9 @@
-import { Dimensions, PixelRatio, Platform } from 'react-native';
+import { Dimensions, PixelRatio } from 'react-native';
 import Toast, { ToastType } from 'react-native-toast-message';
+import { IS_LOGIN_KEY, TOKEN_KEY } from './constant';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
-import { TOKEN_KEY } from './constant';
 
 type TDebounceTextChange = {
     ref: React.RefObject<ReturnType<typeof setTimeout> | null>;
@@ -212,8 +212,8 @@ export function isValidJSON(response: string): boolean {
 }
 
 export async function logout(customMessage?: string) {
-    // remove last sync related
-    await AsyncStorage.removeItem(TOKEN_KEY);
+    // remove auth tokens and login flag
+    await AsyncStorage.multiRemove([TOKEN_KEY, IS_LOGIN_KEY]);
 
     showToast({
         title: customMessage ?? 'Logged out successfully',

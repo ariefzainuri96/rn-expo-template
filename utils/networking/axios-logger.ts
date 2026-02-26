@@ -1,4 +1,3 @@
-import { IS_LOGIN_KEY, TOKEN_KEY } from '../constant';
 import axios, {
     AxiosError,
     AxiosInstance,
@@ -6,10 +5,15 @@ import axios, {
     AxiosResponse,
     InternalAxiosRequestConfig,
 } from 'axios';
+import { IS_LOGIN_KEY, TOKEN_KEY } from '../constant';
 import { isValidJSON, logout, showToast } from '../utils';
-import { router, usePathname } from 'expo-router';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+import { router } from 'expo-router';
+
+const DEFAULT_BASE_URL =
+    Constants.expoConfig?.extra?.API_BASE_URL ?? 'https://api.example.com';
 
 // import { navigationRef, navigationRefDispatch } from '../../App';
 
@@ -52,9 +56,7 @@ export const onErrorResponse = async (
             if user has been login, the value of isLogin will be true
         */
         const isLogin = (await AsyncStorage.getItem(IS_LOGIN_KEY)) ?? 'false';
-        const isInLogin =
-            usePathname() === '/login' ||
-            isLogin === 'false';
+        const isInLogin = isLogin === 'false';
 
         /*
             dont show toast or any action if in login
@@ -103,10 +105,7 @@ let axiosInstance: AxiosInstance | null = null;
 
 export const getAxiosInstance = async (timeout: number = 10000) => {
     const token = await AsyncStorage.getItem(TOKEN_KEY);
-    // const baseUrl =
-    //     (await AsyncStorage.getItem(BASE_URL_KEY)) ?? DEFAULT_BASE_URL;
-    // const baseUrl = Constants.expoConfig?.extra?.API_BASE_URL;
-    const baseUrl = 'base_url';
+    const baseUrl = DEFAULT_BASE_URL;
 
     if (!axiosInstance) {
         axiosInstance = axios.create({
