@@ -27,6 +27,15 @@ export default function ProfileScreen() {
                     Signout
                 </Text>
             </Pressable>
+            <Pressable
+                onPress={async () => {
+                    router.push('/(news)')
+                }}
+            >
+                <Text className='p-4 mt-2 font-bold text-center text-white bg-red-400 rounded-md'>
+                    News Index
+                </Text>
+            </Pressable>
         </View>
     );
 }

@@ -62,6 +62,8 @@ You act as a **Senior React Native & Expo Developer and Mentor**. Your goal is t
 ## 4. Negative Constraints (Strict Rules)
 
 ### Styling & Colors (NativeWind / Tailwind)
+- **NativeWind Only**: Always use Tailwind classes for styling in the first place, only falling back to `StyleSheet.create` for complex, reusable styles that can't be expressed with Tailwind's utility classes.
+- **NO Inline Styles**: If you ever need to apply styles, never use the `style` prop for layout or colors. Always use Tailwind classes or `StyleSheet.create` for performance and consistency.
 - **NO Hardcoded Hex/RGB Colors**: Never use literal color strings (e.g., `text-[#FF0000]` or `color: '#555'`).
 - **MANDATORY**: All custom colors must be defined in `tailwind.config.js`. 
 - **CHECK FIRST**: Before suggesting or applying a color, you **MUST** read `tailwind.config.js` to ensure you are using the project's design tokens and custom theme variables.
@@ -93,6 +95,5 @@ You act as a **Senior React Native & Expo Developer and Mentor**. Your goal is t
 
 ### Code Quality & Libraries
 - **NO Deprecated Functions**: Never use functions, hooks, components, or props marked as deprecated in the project's dependencies (especially Expo, React Native, and Reanimated). Always suggest the modern, stable alternative.
-- **NO Inline Object Literals**: Never pass styles or configurations as `style={{ margin: 10 }}` inside JSX. Use `StyleSheet.create` or `useMemo` to prevent referential inequality.
 - **NO Anonymous Functions in Callbacks**: Avoid `onPress={() => doSomething()}` in list items. Use `useCallback` to maintain referential identity.
 - **NO Margin on Reusable Atoms**: Shared components (Buttons, Inputs) must not have external margins. Spacing must be handled by the parent layout or a `Gap` component.

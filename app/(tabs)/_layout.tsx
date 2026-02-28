@@ -12,7 +12,7 @@ export default function TabLayout() {
     const session = useAuthStore((state) => state.session);
 
     if (!session) {
-        return <Redirect href='/login' />;
+        return <Redirect href='/(auth)/login' />;
     }
 
     return (

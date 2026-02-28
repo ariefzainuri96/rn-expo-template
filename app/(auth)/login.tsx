@@ -1,9 +1,6 @@
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import {
-    KeyboardProvider,
-    KeyboardStickyView,
-} from 'react-native-keyboard-controller';
 import { LoginInput, loginSchema } from '@/validation/login';
+import { useCallback, useMemo } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import {
     StyleSheet,
     Text,
@@ -11,18 +8,21 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import { useCallback, useMemo } from 'react';
+import {
+    KeyboardProvider,
+    KeyboardStickyView,
+} from 'react-native-keyboard-controller';
 
+import { useLogin } from '@/hooks/use-login';
+import { LoginResponse } from '@/services/auth/login';
+import { useAuthStore } from '@/stores/auth';
+import { showToast } from '@/utils/utils';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { AxiosError } from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
-import { LoginResponse } from '@/services/auth/login';
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { showToast } from '@/utils/utils';
-import { useAuthStore } from '@/stores/auth';
-import { useLogin } from '@/hooks/use-login';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
     gradientLayer: {
