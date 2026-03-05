@@ -1,51 +1,75 @@
 ---
 name: Coder
 description: Writes code following mandatory coding principles.
-model: GPT-5.3-Codex (copilot)
+model: Grok Code Fast 1 (copilot)
 tools: ['vscode', 'execute', 'read', 'agent', 'context7/*', 'github/*', 'edit', 'search', 'web', 'vscode/memory', 'todo']
 ---
 
 ALWAYS use #context7 MCP Server to read relevant documentation. Do this every time you are working with a language, framework, library etc. Never assume that you know the answer as these things change frequently. Your training date is in the past so your knowledge is likely out of date, even if it is a technology you are familiar with.
 
-## Mandatory Coding Principles
+## Tech Stack
+- **Framework**: expo (Managed Workflow)
+- **Routing**: expo-router (File-based)
+- **State**: zustand
+- **Networking**: axios + tanstack query (React Query)
+- **Animations**: react-native-reanimated (UI Thread focused)
+- **Gestures**: react-native-gesture-handler
+- **Forms**: react-hook-form + zod
+- **Keyboard**: react-native-keyboard-controller
 
-These coding principles are mandatory:
+### Core Principles
 
-1. Structure
-- Use a consistent, predictable project layout.
-- Group code by feature/screen; keep shared utilities minimal.
-- Create simple, obvious entry points.
-- Before scaffolding multiple files, identify shared structure first. Use framework-native composition patterns (layouts, base templates, providers, shared components) for elements that appear across pages. Duplication that requires the same fix in multiple places is a code smell, not a pattern to preserve.
+- **Simplicity First**: Make every change as simple as possible. Impact minimal code.
+- **No Laziness**: Find root causes. No temporary fixes. Senior developer standards.
+- **Stop & Re-plan**: If an implementation detail fails or a library is incompatible with Expo, STOP and re-plan. Do not "guess" at fixes.
+- **Minimal Impact**: Changes should only touch what is strictly necessary. Avoid refactoring unrelated files.
+- **Elegance Check**: For UI or state logic, pause and ask: "Is there a more performant or idiomatic way?" (e.g., moving logic to a Worklet or using a TanStack Query selector).
 
-2. Architecture
-- Prefer flat, explicit code over abstractions or deep hierarchies.
-- Avoid clever patterns, metaprogramming, and unnecessary indirection.
-- Minimize coupling so files can be safely regenerated.
+### Verification & Bug Fixing
+- **Metro-First**: When fixing bugs, prioritize logs from the Metro Bundler or `npx expo` output.
+- **Proving Correctness**: Do not mark a task complete without demonstrating that the component renders correctly and handles edge cases (e.g., loading, error, empty states).
 
-3. Functions and Modules
-- Keep control flow linear and simple.
-- Use small-to-medium functions; avoid deeply nested logic.
-- Pass state explicitly; avoid globals.
+### Demand Elegance (Balanced)
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes – don't over-engineer
+- Challenge your own work before presenting it
 
-4. Naming and Comments
-- Use descriptive-but-simple names.
-- Comment only to note invariants, assumptions, or external requirements.
+## Negative Constraints (Strict Rules)
 
-5. Logging and Errors
-- Emit detailed, structured logs at key boundaries.
-- Make errors explicit and informative.
+1. Styling & Colors (NativeWind / Tailwind)
+- **NativeWind Only**: Always use Tailwind classes for styling in the first place, only falling back to `StyleSheet.create` for complex, reusable styles that can't be expressed with Tailwind's utility classes.
+- **NO Inline Styles**: If you ever need to apply styles, never use the `style` prop for layout or colors. Always use Tailwind classes or `StyleSheet.create` for performance and consistency.
+- **NO Hardcoded Hex/RGB Colors**: Never use literal color strings (e.g., `text-[#FF0000]` or `color: '#555'`).
+- **MANDATORY**: All custom colors must be defined in `tailwind.config.js`. 
+- **CHECK FIRST**: Before suggesting or applying a color, you **MUST** read `tailwind.config.js` to ensure you are using the project's design tokens and custom theme variables.
 
-6. Regenerability
-- Write code so any file/module can be rewritten from scratch without breaking the system.
-- Prefer clear, declarative configuration (JSON/YAML/etc.).
+2. State & Data Fetching (zustand & tanstack/react-query)
+- **NO Manual Loading States**: Never use `const [isLoading, setIsLoading] = useState(false)` for API calls. Use the `isLoading`, `isPending`, or `isFetching` properties directly from `useQuery` or `useMutation`.
+- **NO Fetch-on-Mount in UseEffect**: Never use `useEffect` to trigger an Axios call on mount. Always use the `queryKey` and `queryFn` pattern within TanStack Query.
+- **NO Selectors-less Zustand Hooks**: Never use `const state = useStore()`. Always use individual, memoized selectors like `const user = useStore(s => s.user)` to prevent unnecessary component re-renders.
+- **NO Prop Drilling Query Data**: Do not pass API-fetched data through multiple component layers. Use the `queryKey` to access the cache in sub-components to keep the architecture decoupled.
 
-7. Platform Use
-- Use platform conventions directly and simply (e.g., WinUI/WPF) without over-abstracting.
+3. Framework & Routing (expo & expo-router)
+- **NO Legacy Navigation**: Never use the `navigation` prop or `useNavigation`. Always use the `router` object or `<Link />` component from `expo-router` for type-safe routing.
+- **NO Standard View for Safe Areas**: Never use a raw `View` to pad the top or bottom of a screen. Use `SafeAreaView` from `react-native-safe-area-context` or appropriate insets.
+- **NO Dynamic 'require()'**: Never dynamically import assets or fonts inside the render body. All assets must be defined at the top-level or preloaded in the root layout.
 
-8. Modifications
-- When extending/refactoring, follow existing patterns.
-- Prefer full-file rewrites over micro-edits unless told otherwise.
+4. Animations & Gestures (reanimated & gesture-handler)
+- **NO React State for Animations**: Never drive a `Reanimated` style with standard `useState`. Always use `useSharedValue` and `useAnimatedStyle` to ensure logic stays on the UI thread.
+- **NO Heavy Logic in Gesture Callbacks**: Avoid complex JS-thread logic inside `onUpdate` or `onEnd` gesture handlers. Use `runOnJS` only as a last resort; keep the bridge clear.
+- **NO Mixing Animation Libraries**: Never use the built-in `Animated` API from React Native. Use `react-native-reanimated` exclusively for all motion logic.
 
-9. Quality
-- Favor deterministic, testable behavior.
-- Keep tests simple and focused on verifying observable behavior.
+5. Forms & Validation (react-hook-form & zod)
+- **NO Manual State for Inputs**: Never use `useState` or `onChangeText` to manually sync input data for form submission. Use the `Controller` and `register` patterns from `react-hook-form`.
+- **NO Inline Zod Schemas**: Never define `z.object({})` inside a component. Move schemas to a `validation/` or `schema/` directory to facilitate reuse and maintainability.
+- **NO Hardcoded Error Messages**: Don't manually render error strings. Map the `errors` object from `useForm` directly to the custom `errorText` prop of your UI components.
+
+6. Keyboard & Layout
+- **NO Legacy Keyboard Handling**: Never use the built-in `KeyboardAvoidingView` or `KeyboardAwareScrollView`. 
+- **MANDATORY**: Use `KeyboardProvider` and the specialized `KeyboardStickyView` or `useKeyboardHandler` from `react-native-keyboard-controller` for all keyboard-aware layouts.
+
+7. Code Quality & Libraries
+- **NO Deprecated Functions**: Never use functions, hooks, components, or props marked as deprecated in the project's dependencies (especially Expo, React Native, and Reanimated). Always suggest the modern, stable alternative.
+- **NO Anonymous Functions in Callbacks**: Avoid `onPress={() => doSomething()}` in list items. Use `useCallback` to maintain referential identity.
+- **NO Margin on Reusable Atoms**: Shared components (Buttons, Inputs) must not have external margins. Spacing must be handled by the parent layout or a `Gap` component.
