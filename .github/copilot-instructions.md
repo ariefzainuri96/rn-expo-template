@@ -2,13 +2,4 @@
 
 ## Rules
 - **Context Discovery**: Before any task, you MUST read `.github/OVERVIEW.md` and scan `.github/skills/` for relevant patterns.
-
-## Tech Stack
-- **Framework**: expo (Managed Workflow)
-- **Routing**: expo-router (File-based)
-- **State**: zustand
-- **Networking**: axios + tanstack query (React Query)
-- **Animations**: react-native-reanimated (UI Thread focused)
-- **Gestures**: react-native-gesture-handler
-- **Forms**: react-hook-form + zod
-- **Keyboard**: react-native-keyboard-controller
+- **Search Plan**: If a problem involves a specific error code or a bug not found in `@context7` MCP docs, use `@brave-search` MCP to find recent GitHub Issues or StackOverflow solutions from the last 12 months.
